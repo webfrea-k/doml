@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools" android:background="@color/lighterGray" android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            cardCornerRadius="5dp">
+        <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                <TextView
+                        android:padding="10sp"
+                        android:text="@string/person_selector_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView"
+                        style="@style/TitleView"/>
+                <Spinner
+                        android:padding="10sp"
+                        android:layout_gravity="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" android:id="@+id/person_spinner"
+                />
+            </TableRow>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                <TextView
+                        android:padding="10sp"
+                        android:text="@string/birthday_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/textView2"
+                        style="@style/SubtitleView"/>
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="date"
+                        android:ems="10"
+                        android:id="@+id/editText"/>
+            </TableRow>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent"/>
+        </TableLayout>
+    </android.support.v7.widget.CardView>
+</android.support.constraint.ConstraintLayout>
