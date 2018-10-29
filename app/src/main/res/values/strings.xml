@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Days of my life</string>
+    <string name="tab_my_data">MY DATA</string>
+    <string name="tab_outlived">OUTLIVED</string>
+    <string name="tab_social">SOCIAL</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>
