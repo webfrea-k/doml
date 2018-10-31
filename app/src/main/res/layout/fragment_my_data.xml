@@ -1,112 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools" android:background="@color/lighterGray" android:layout_width="match_parent"
-                                             android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:background="@color/lighterGray" android:layout_width="match_parent" android:layout_height="match_parent">
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    cardCornerRadius="5dp">
+                <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="100">
+                        <TextView
+                                android:text="@string/person_selector_title"
+                                android:layout_weight="50"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/textView"
+                                style="@style/TitleView"/>
+                        <Spinner
+                                style="@style/people_spinner_style"
+                                android:layout_width="wrap_content"
+                                android:layout_weight="50"
+                                android:layout_height="match_parent" android:id="@+id/person_spinner"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="100">
+                        <TextView
+                                android:text="@string/birthday_label"
+                                android:layout_weight="50"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" android:id="@+id/textView2"
+                                style="@style/SubtitleView"/>
 
-    <android.support.v7.widget.CardView
-            android:id="@+id/card_view_birthday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            cardCornerRadius="5dp">
-        <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                            <TextView
+                                    android:layout_weight="40"
+                                    android:text="@string/default_date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" android:id="@+id/textView17"/>
+                            <ImageButton
+                                    android:layout_margin="10sp"
+                                    android:layout_weight="10"
+                                    android:background="@null"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" app:srcCompat="@drawable/calendar_icon"
+                                    android:id="@+id/btn_select_birthday"/>
+                    </TableRow>
+                </TableLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_counters"
+                    app:layout_constraintTop_toBottomOf="@id/card_view_birthday"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_margin="10sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    cardCornerRadius="5dp">
+                <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="@string/person_selector_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView"
-                        style="@style/TitleView"/>
-                <Spinner
-                        android:layout_gravity="end"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" android:id="@+id/person_spinner"
-                />
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="@string/birthday_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView2"
-                        style="@style/SubtitleView"/>
-                <ImageButton
-                        android:layout_gravity="end"
-                        android:background="@null"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" app:srcCompat="@drawable/calendar_icon"
-                        android:id="@+id/imageButton"/>
-            </TableRow>
-        </TableLayout>
-    </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
-            app:layout_constraintTop_toBottomOf="@id/card_view_birthday"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_margin="10sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            cardCornerRadius="5dp">
-        <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/alive_for_title"
+                                style="@style/TitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/lbl_you_are_alive"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/seconds"
+                                style="@style/SubtitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/textView5"/>
+                        <TextView
+                                android:text="@string/zero"
+                                style="@style/SubtitleViewBlack"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/digit_seconds"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/minutes"
+                                style="@style/SubtitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/textView6"/>
+                        <TextView
+                                android:text="@string/zero"
+                                style="@style/SubtitleViewBlack"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/digit_minutes"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/hours"
+                                style="@style/SubtitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/textView7"/>
+                        <TextView
+                                android:text="@string/zero"
+                                style="@style/SubtitleViewBlack"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/digit_hours"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/days"
+                                style="@style/SubtitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/textView8"/>
+                        <TextView
+                                android:text="@string/zero"
+                                style="@style/SubtitleViewBlack"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/digit_days"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/months"
+                                style="@style/SubtitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/textView9"/>
+                        <TextView
+                                android:text="@string/zero"
+                                style="@style/SubtitleViewBlack"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/digit_months"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/years"
+                                style="@style/SubtitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/textView10"/>
+                        <TextView
+                                android:text="@string/zero"
+                                style="@style/SubtitleViewBlack"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/digit_years"/>
+                    </TableRow>
+                </TableLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                    app:layout_constraintTop_toBottomOf="@id/card_view_counters"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_margin="10sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    cardCornerRadius="5dp">
+                <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="@string/alive_for_title"
-                        style="@style/TitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView4"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="Seconds"
-                        style="@style/SubtitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView5"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="Minutes"
-                        style="@style/SubtitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView6"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="Hours"
-                        style="@style/SubtitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView7"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="Days"
-                        style="@style/SubtitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView8"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="Months"
-                        style="@style/SubtitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView9"/>
-            </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                <TextView
-                        android:text="Years"
-                        style="@style/SubtitleView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:id="@+id/textView10"/>
-            </TableRow>
-        </TableLayout>
-    </android.support.v7.widget.CardView>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text="@string/next_to_outlive"
+                                style="@style/TitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/textView3"/>
+                    </TableRow>
+                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                        <TextView
+                                android:text=""
+                                style="@style/SubtitleView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" android:id="@+id/lbl_next_to_outlive"/>
+                    </TableRow>
+                </TableLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

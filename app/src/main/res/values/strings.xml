@@ -8,4 +8,13 @@
     <string name="person_selector_title">Show data for</string>
     <string name="birthday_label">Birthday</string>
     <string name="alive_for_title">You are alive</string>
+    <string name="seconds">Seconds</string>
+    <string name="minutes">Minutes</string>
+    <string name="hours">Hours</string>
+    <string name="days">Days</string>
+    <string name="months">Months</string>
+    <string name="years">Years</string>
+    <string name="next_to_outlive">Next to outlive</string>
+    <string name="zero">0</string>
+    <string name="default_date">01.01.2000</string>
 </resources>
