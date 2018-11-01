@@ -17,4 +17,5 @@
     <string name="next_to_outlive">Next to outlive</string>
     <string name="zero">0</string>
     <string name="default_date">01.01.2000</string>
+    <string name="data_retrieval_failed">Failed to retrieve data. Please try again later.</string>
 </resources>
