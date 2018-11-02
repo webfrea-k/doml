@@ -38,12 +38,12 @@
                                 android:layout_height="wrap_content" android:id="@+id/textView2"
                                 style="@style/SubtitleView"/>
 
-                            <TextView
+                            <EditText
                                     android:layout_weight="40"
-                                    android:text="@string/default_date"
+                                    android:hint="@string/select_birthday"
                                     style="@style/SubtitleViewBlack"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:id="@+id/lbl_birthday"/>
+                                    android:layout_height="wrap_content" android:id="@+id/edit_birthday"/>
                             <ImageButton
                                     android:layout_margin="10sp"
                                     android:layout_weight="10"

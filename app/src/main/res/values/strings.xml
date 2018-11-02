@@ -18,4 +18,12 @@
     <string name="zero">0</string>
     <string name="default_date">01.01.2000</string>
     <string name="data_retrieval_failed">Failed to retrieve data. Please try again later.</string>
+    <string name="cancel">CANCEL</string>
+    <string name="add">ADD</string>
+    <string name="name">Name</string>
+    <string name="nickname">Nickname</string>
+    <string name="cannot_be_empty">Name cannot be empty.</string>
+    <string name="select_birthday">Select birthday</string>
+    <string name="outlived_by">Outlived by %d days</string>
+    <string name="days_more">%d days more</string>
 </resources>

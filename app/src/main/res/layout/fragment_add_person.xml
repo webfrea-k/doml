@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TableLayout
+            android:layout_width="368dp"
+            android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="100">
+            <TextView
+                    android:text="@string/name"
+                    style="@style/SubtitleView"
+                    android:layout_weight="50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textView4"/>
+            <EditText
+                    android:layout_weight="50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    style="@style/SubtitleViewBlack"
+                    android:hint="@string/nickname"
+                    android:ems="10"
+                    android:id="@+id/person_name"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="100">
+            <Button
+                    android:text="@string/cancel"
+                    android:layout_weight="50"
+                    android:background="@null"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/cancel"/>
+            <Button
+                    android:text="@string/add"
+                    android:background="@null"
+                    android:layout_weight="50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/add"/>
+        </TableRow>
+    </TableLayout>
+</android.support.constraint.ConstraintLayout>
