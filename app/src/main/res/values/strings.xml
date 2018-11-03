@@ -26,4 +26,8 @@
     <string name="select_birthday">Select birthday</string>
     <string name="outlived_by">Outlived by %d days</string>
     <string name="days_more">%d days more</string>
+    <string name="big_number_formatter">%,d</string>
+    <string name="data_not_avaulable">Data not available.</string>
+    <string name="close">Close</string>
+
 </resources>

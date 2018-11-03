@@ -156,25 +156,75 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     cardCornerRadius="5dp">
-                <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:paddingBottom="5sp"
+                              android:orientation="vertical">
+                    <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                        <TextView
-                                android:text="@string/next_to_outlive"
-                                style="@style/TitleView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" android:id="@+id/textView3"/>
-                    </TableRow>
-                    <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
-                        <TextView
-                                android:text=""
-                                style="@style/SubtitleView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" android:id="@+id/lbl_next_to_outlive"/>
-                    </TableRow>
-                </TableLayout>
+                        <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                            <TextView
+                                    android:text="@string/next_to_outlive"
+                                    style="@style/TitleView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" android:id="@+id/textView3"/>
+                        </TableRow>
+
+                    </TableLayout>
+                    <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50sp">
+
+                        <TableRow
+                                android:paddingTop="2sp"
+                                android:paddingStart="10sp"
+                                android:paddingEnd="10sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" >
+                            <android.support.v7.widget.CardView
+                                    android:layout_width="45sp"
+                                    android:layout_height="45sp"
+                                    android:id="@+id/view2"
+                                    app:cardCornerRadius="23sp"
+                                    android:shape="ring"
+                                    android:thicknessRatio="0">
+                                <ImageView
+                                        android:id="@+id/avatar"
+                                        android:adjustViewBounds="true"
+                                        android:scaleType="centerCrop"
+                                        android:layout_width="45sp"
+                                        android:layout_height="45sp"
+                                        app:srcCompat="@drawable/avatar" />
+                            </android.support.v7.widget.CardView>
+
+                            <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent" >
+                                <LinearLayout
+                                        android:paddingStart="15sp"
+                                        android:paddingEnd="10sp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical">
+                                    <TextView
+                                            android:paddingTop="2sp"
+                                            android:id="@+id/next_to_outlive_title"
+                                            style="@style/SubtitleViewBlackNoPadding"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
+
+                                    <TextView
+                                            android:id="@+id/next_to_outlive_subtitle"
+                                            style="@style/SubtitleViewNoPadding"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"/>
+                                </LinearLayout>
+                            </TableRow>
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </ScrollView>

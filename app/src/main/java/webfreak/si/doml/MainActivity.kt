@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -99,13 +98,7 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-    fun toggleFab(){
-        if (fab.isShown) {
-            fab.hide()
-        } else {
-            fab.show()
-        }
-    }
+
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to

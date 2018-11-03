@@ -1,5 +1,6 @@
 package webfreak.si.doml
 
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
@@ -11,13 +12,21 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.outlived_list_item.view.*
 import webfreak.si.doml.objects.Celebrity
+import android.support.v4.app.FragmentActivity
+import android.R.attr.fragment
+import android.R.attr.key
+import android.os.Bundle
 
 
-class CelebrityAdapter(private var c: Context, private var celebrities: ArrayList<Celebrity>, private var daysAlive: Long) : BaseAdapter() {
+
+
+
+class CelebrityAdapter(private var c: Context, private var celebrities: ArrayList<Celebrity>, days: Long) : BaseAdapter() {
 
     override fun getCount(): Int   {  return celebrities.size  }
     override fun getItem(i: Int): Any {  return celebrities[i] }
     override fun getItemId(i: Int): Long { return i.toLong()}
+    var daysAlive = days
 
     override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View {
         var view = view
@@ -47,7 +56,13 @@ class CelebrityAdapter(private var c: Context, private var celebrities: ArrayLis
                 img.setImageResource(R.drawable.avatar)
             }
         }
-        view.setOnClickListener { Toast.makeText(c, celebrity.getName(), Toast.LENGTH_SHORT).show() }
+        view.setOnClickListener { it
+            val activity = c as FragmentActivity
+            val fm = activity.supportFragmentManager
+            val pop = FragmentCelebrityDetails.newInstance("",0,celebrity)
+            pop.setTargetFragment(fm.primaryNavigationFragment, 1000)
+            pop.show(fm, "Celebrity details")
+        }
 
         return view
     }
