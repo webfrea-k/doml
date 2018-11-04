@@ -3,4 +3,5 @@ import kotlin.collections.HashMap
 
 data class UserBirthday(
     var birthdays: HashMap<String, Long> = HashMap(),
-    val id: String = "")
+    val id: String = "",
+    var token: String = "")

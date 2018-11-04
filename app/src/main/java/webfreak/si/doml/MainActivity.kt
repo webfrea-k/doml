@@ -1,5 +1,6 @@
 package webfreak.si.doml
 
+import android.content.Context
 import android.support.design.widget.TabLayout
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val prefs = PreferenceHelper.defaultPrefs(this)
+        val prefs = PreferenceHelper.defaultPrefs(this as Context)
 
         val uuid = java.util.UUID.randomUUID().toString()
         if (prefs.getString(Const.GLOBAL_USER_ID, "empty") == "empty") {

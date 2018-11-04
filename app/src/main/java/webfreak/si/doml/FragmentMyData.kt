@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import org.joda.time.*
 import webfreak.si.doml.objects.NextToOutliveEvent
 import webfreak.si.doml.objects.UpdateEvent
 import webfreak.si.doml.objects.UserBirthday
+import java.lang.Exception
 
 class FragmentMyData : Fragment() {
     private lateinit var mDatabase: DatabaseReference
@@ -75,6 +77,11 @@ class FragmentMyData : Fragment() {
 
                 val birthdayDate =  "" + dayOfMonth + "." + (monthOfYear +1) + "."+ year
                 user!!.birthdays[rootView.person_spinner.selectedItem.toString()] = convertDateToLong(birthdayDate)
+                try {
+                    user!!.token = prefs.getString(Const.TOKEN, "")!!
+                }catch (ex: Exception) {
+                    Log.d("Error", ex.toString())
+                }
                 birthday.setText(birthdayDate)
 
                 mDatabase.child("users").child(prefs.getString(Const.GLOBAL_USER_ID,"todo")!!).setValue(user)

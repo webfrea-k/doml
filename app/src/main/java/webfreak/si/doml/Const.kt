@@ -7,5 +7,6 @@ class Const {
         const val YOU = "You"
         const val ADD_NEW = "+ Add person"
         const val ADDED_TO_DB = "ADDED_TO_DB"
+        const val TOKEN = "TOKEN"
     }
 }
