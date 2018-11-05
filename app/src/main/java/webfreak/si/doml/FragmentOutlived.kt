@@ -82,8 +82,10 @@ class FragmentOutlived : Fragment() {
     fun onEvent(event: UpdateEvent) {
         adapter.daysAlive = event.value
         adapter.notifyDataSetChanged()
-        val notOutlived = list.filter { s -> s.getDaysLived() > event.value }.first()
-        EventBus.getDefault().post(NextToOutliveEvent(notOutlived.getName(), notOutlived.getDaysLived() - event.value, notOutlived.getAvatar()))
+        val celebrity = list.find { s -> s.getDaysLived() > event.value }
+        celebrity?.let {
+            EventBus.getDefault().post(NextToOutliveEvent(it.getName(), it.getDaysLived() - event.value, it.getAvatar()))
+        }
     }
     override fun onStart() {
         super.onStart()

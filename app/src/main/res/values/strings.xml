@@ -29,5 +29,7 @@
     <string name="big_number_formatter">%,d</string>
     <string name="data_not_avaulable">Data not available.</string>
     <string name="close">Close</string>
+    <string name="no_additional_data_available">No additional data available.</string>
+    <string name="share">Share</string>
 
 </resources>

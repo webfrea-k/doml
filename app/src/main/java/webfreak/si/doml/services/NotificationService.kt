@@ -12,7 +12,9 @@ class NotificationService: FirebaseMessagingService() {
         ctx = this
     }
     override fun onNewToken(token: String?) {
-        val prefs = PreferenceHelper.defaultPrefs(ctx!!)
-        prefs.edit().putString(Const.TOKEN, token).apply()
+        ctx?.let {
+            val prefs = PreferenceHelper.defaultPrefs(it)
+            prefs.edit().putString(Const.TOKEN, token).apply()
+        }
     }
 }

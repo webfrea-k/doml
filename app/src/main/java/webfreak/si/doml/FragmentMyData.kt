@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,7 @@ import org.joda.time.*
 import webfreak.si.doml.objects.NextToOutliveEvent
 import webfreak.si.doml.objects.UpdateEvent
 import webfreak.si.doml.objects.UserBirthday
-import java.lang.Exception
+import org.joda.time.format.DateTimeFormat
 
 class FragmentMyData : Fragment() {
     private lateinit var mDatabase: DatabaseReference
@@ -39,13 +38,13 @@ class FragmentMyData : Fragment() {
         val prefs = PreferenceHelper.defaultPrefs(activity)
         val rootView = inflater.inflate(R.layout.fragment_my_data, container, false)
         val birthday = rootView.edit_birthday
-        globalUserId = prefs.getString(Const.GLOBAL_USER_ID,"todo")!!
+        globalUserId = prefs.getString(Const.GLOBAL_USER_ID,"") ?: ""
         mDatabase = FirebaseDatabase.getInstance().reference
         mDatabase.child("users").child(globalUserId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                dataSnapshot.getValue(UserBirthday::class.java).let {
-                    user = it
-                    it?.birthdays?.keys?.let { list ->
+                dataSnapshot.getValue(UserBirthday::class.java).let { onlineUser ->
+                    user = onlineUser
+                    onlineUser?.birthdays?.keys?.let { list ->
                         val birthdays = mutableListOf(Const.YOU)
                         val birthdaysTemp = list.toMutableList()
 
@@ -59,8 +58,9 @@ class FragmentMyData : Fragment() {
                         trackedUsers = birthdays
 
                         person_spinner.adapter = ArrayAdapter(activity, R.layout.spinner_item, trackedUsers)
-                        val birthdayLong = user!!.birthdays[person_spinner.selectedItem]
-                        birthday.setText(convertLongToTime(birthdayLong!!))
+                        user?.birthdays?.get(person_spinner.selectedItem)?.let {
+                            birthday.setText(convertLongToTime(it))
+                        }
                     }
                 }
             }
@@ -74,19 +74,22 @@ class FragmentMyData : Fragment() {
         val datePicker = rootView.btn_select_birthday
         datePicker.setOnClickListener {
             val dpd = DatePickerDialog(activity, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-
                 val birthdayDate =  "" + dayOfMonth + "." + (monthOfYear +1) + "."+ year
-                user!!.birthdays[rootView.person_spinner.selectedItem.toString()] = convertDateToLong(birthdayDate)
-                try {
-                    user!!.token = prefs.getString(Const.TOKEN, "")!!
-                }catch (ex: Exception) {
-                    Log.d("Error", ex.toString())
+                val formatter = DateTimeFormat.forPattern("dd.MM.yyyy")
+                val birthdayDateDate = formatter.parseDateTime(birthdayDate)
+                if (user == null) {
+                    user = UserBirthday()
                 }
+                user?.birthdays?.set(rootView.person_spinner.selectedItem.toString(),
+                    convertDateToLong(birthdayDate)
+                )
+                user?.token = prefs.getString(Const.TOKEN, "")!!
+
                 birthday.setText(birthdayDate)
-
                 mDatabase.child("users").child(prefs.getString(Const.GLOBAL_USER_ID,"todo")!!).setValue(user)
-                EventBus.getDefault().post(UpdateEvent(0, convertDateToLong(birthdayDate)))
-
+                EventBus.getDefault().post(UpdateEvent(0, getDaysToNow(birthdayDateDate)))
+                actualBirthdayDate = birthdayDateDate
+                restartHandlerRuns()
             }, birthdaysComponents[2], birthdaysComponents[1], birthdaysComponents[0])
             dpd.show()
         }
@@ -104,11 +107,11 @@ class FragmentMyData : Fragment() {
                     pop.show(fm, "Add Person")
                 } else {
                     user?.birthdays?.get(text).let {
-                        if(it == 0L) {
+                        if(it == 0L || it == null) {
                             birthday.text.clear()
                             datePicker.performClick()
                         } else {
-                            birthday.setText(it?.let { it1 -> convertLongToTime(it1) })
+                            birthday.setText(convertLongToTime(it))
                             val currentDate = DateTime()
                             val birthDate = DateTime(it)
                             actualBirthdayDate = birthDate
@@ -118,20 +121,24 @@ class FragmentMyData : Fragment() {
                                 prefs.edit().putLong(Const.BIRTHDAY, daysAlive).apply()
                             }
                             EventBus.getDefault().post(UpdateEvent(0, daysAlive))
-                            handler.removeCallbacksAndMessages(null)
-                            runnableCode = object: Runnable {
-                                override fun run() {
-                                    updateCounters(actualBirthdayDate)
-                                    handler.postDelayed(this, 1000)
-                                }
-                            }
-                            handler.postDelayed(runnableCode, 0)
+                            restartHandlerRuns()
                         }
                     }
                 }
             }
         }
         return rootView
+    }
+
+    fun restartHandlerRuns() {
+        handler.removeCallbacksAndMessages(null)
+        runnableCode = object: Runnable {
+            override fun run() {
+                updateCounters(actualBirthdayDate)
+                handler.postDelayed(this, 1000)
+            }
+        }
+        handler.postDelayed(runnableCode, 0)
     }
 
     fun updateCounters(birthDate: DateTime) {
@@ -144,7 +151,11 @@ class FragmentMyData : Fragment() {
         digit_years.text = java.lang.String.format(getString(R.string.big_number_formatter), period.years)
     }
 
-    fun convertDateToLong(date: String): Long {
+    private fun getDaysToNow(birthDate: DateTime): Long {
+        return Days.daysBetween(birthDate, DateTime()).days.toLong()
+    }
+
+    private fun convertDateToLong(date: String): Long {
         val df = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
         return df.parse(date).time
     }
