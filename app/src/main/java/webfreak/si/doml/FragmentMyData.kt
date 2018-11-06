@@ -56,10 +56,11 @@ class FragmentMyData : Fragment() {
                             birthdays.add(it)
                         }
                         trackedUsers = birthdays
-
-                        person_spinner.adapter = ArrayAdapter(activity, R.layout.spinner_item, trackedUsers)
-                        user?.birthdays?.get(person_spinner.selectedItem)?.let {
-                            birthday.setText(convertLongToTime(it))
+                        person_spinner?.let {
+                            it.adapter = ArrayAdapter(activity, R.layout.spinner_item, trackedUsers)
+                            user?.birthdays?.get(person_spinner.selectedItem)?.let {
+                                birthday.setText(convertLongToTime(it))
+                            }
                         }
                     }
                 }
@@ -87,6 +88,9 @@ class FragmentMyData : Fragment() {
 
                 birthday.setText(birthdayDate)
                 mDatabase.child("users").child(prefs.getString(Const.GLOBAL_USER_ID,"todo")!!).setValue(user)
+
+                prefs.edit().putLong(Const.DAYS_ALIVE,getDaysToNow(birthdayDateDate)).apply()
+
                 EventBus.getDefault().post(UpdateEvent(0, getDaysToNow(birthdayDateDate)))
                 actualBirthdayDate = birthdayDateDate
                 restartHandlerRuns()

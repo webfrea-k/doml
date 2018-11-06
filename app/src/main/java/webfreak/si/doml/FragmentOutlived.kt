@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
@@ -52,17 +53,6 @@ class FragmentOutlived : Fragment() {
                         } else {
                             list.add(Celebrity(jsonInner.getString("name"), jsonInner.getString("daysalive").toInt(),null))
                         }
-                        /*
-                        var stringJson = ""
-                        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-                        StrictMode.setThreadPolicy(policy)
-                        Jsoup.connect("https://www.bing.com/images/search?q="+ jsonInner.getString("name").replace(" ","+") +"&FORM=HDRSC2").get().run {
-                            val x =select("img[class=mimg]").first()
-                            val xxy =x.attr("src")
-                            val cccc = "{\"name\":\""+jsonInner.getString("name")+"\",\"daysalive\":\""+jsonInner.getString("daysalive")+"\","+"\"avatar\":\""+xxy+"\"  },"
-                            stringJson += cccc
-                            Log.d("IMG", cccc)
-                        }*/
                     }
                     adapter.notifyDataSetChanged()
                 },
@@ -71,6 +61,26 @@ class FragmentOutlived : Fragment() {
                 })
 
         queue.add(stringReq)
+        rootView.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                var internalList: ArrayList<Celebrity> = ArrayList()
+                for (item in list) {
+                    if (item.getName().toLowerCase().contains(newText.toLowerCase())) {
+                        internalList.add(item)
+                    }
+                }
+                adapter.celebs = internalList
+                adapter.notifyDataSetChanged()
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                //Task HERE
+                return false
+            }
+
+        })
 
         mAdView = rootView.adView
         val adRequest = AdRequest.Builder().build()

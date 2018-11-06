@@ -12,12 +12,12 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 
-class ShareImage(ctx: Context) : BitmapTransformation() {
+class ShareImage(ctx: Context, quote: String) : BitmapTransformation() {
 
     val context: Context = ctx
-
+    val q: String = quote
     override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
-        return drawMultilineTextToBitmap(context, toTransform, "This is a beautiful day indeed!")
+        return drawMultilineTextToBitmap(context, toTransform, q)
     }
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {}

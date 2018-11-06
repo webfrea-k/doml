@@ -8,25 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.outlived_list_item.view.*
 import webfreak.si.doml.objects.Celebrity
 import android.support.v4.app.FragmentActivity
-import android.R.attr.fragment
-import android.R.attr.key
-import android.os.Bundle
-
-
-
-
 
 class CelebrityAdapter(private var c: Context, private var celebrities: ArrayList<Celebrity>, days: Long) : BaseAdapter() {
 
-    override fun getCount(): Int   {  return celebrities.size  }
-    override fun getItem(i: Int): Any {  return celebrities[i] }
+    override fun getCount(): Int   {  return celebs.size  }
+    override fun getItem(i: Int): Any {  return celebs[i] }
     override fun getItemId(i: Int): Long { return i.toLong()}
     var daysAlive = days
+    var celebs = celebrities
 
     override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View {
         var view = view
