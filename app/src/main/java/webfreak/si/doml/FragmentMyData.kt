@@ -58,8 +58,10 @@ class FragmentMyData : Fragment() {
                         trackedUsers = birthdays
                         person_spinner?.let {
                             it.adapter = ArrayAdapter(activity, R.layout.spinner_item, trackedUsers)
-                            user?.birthdays?.get(person_spinner.selectedItem)?.let {
-                                birthday.setText(convertLongToTime(it))
+                            user?.birthdays?.get(person_spinner.selectedItem)?.let {time ->
+                                birthday.setText(convertLongToTime(time))
+                                prefs.edit().putLong(Const.DAYS_ALIVE, getDaysToNowFromString(time)).apply()
+
                             }
                         }
                     }
@@ -155,10 +157,14 @@ class FragmentMyData : Fragment() {
         digit_years.text = java.lang.String.format(getString(R.string.big_number_formatter), period.years)
     }
 
-    private fun getDaysToNow(birthDate: DateTime): Long {
+    private fun getDaysToNowFromString(birth: Long): Long {
+        val birthDate = DateTime(birth)
         return Days.daysBetween(birthDate, DateTime()).days.toLong()
     }
 
+    private fun getDaysToNow(birthDate: DateTime): Long {
+        return Days.daysBetween(birthDate, DateTime()).days.toLong()
+    }
     private fun convertDateToLong(date: String): Long {
         val df = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
         return df.parse(date).time

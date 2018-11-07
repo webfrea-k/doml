@@ -26,12 +26,18 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import kotlinx.android.synthetic.main.fragment_outlived.view.*
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.random.Random
 
 
 class FragmentSocial : Fragment() {
+
+    lateinit var mAdView : AdView
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_social, container, false)
@@ -88,6 +94,11 @@ class FragmentSocial : Fragment() {
                 Toast.makeText(context, getString(R.string.data_retrieval_failed), Toast.LENGTH_SHORT).show()
             }
         }
+
+        mAdView = rootView.adViewSocial
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+
         return rootView
     }
     fun loadImage(rootView: View, daysAlive: Long, quote: String){

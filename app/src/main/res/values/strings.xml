@@ -31,5 +31,8 @@
     <string name="close">Close</string>
     <string name="no_additional_data_available">No additional data available.</string>
     <string name="share">Share</string>
+    <string name="share_image">Share image</string>
+    <string name="quote_of_the_day">Quote of the day</string>
+    <string name="advertising">Advertising</string>
 
 </resources>
