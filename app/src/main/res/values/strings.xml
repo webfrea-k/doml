@@ -32,7 +32,10 @@
     <string name="no_additional_data_available">No additional data available.</string>
     <string name="share">Share</string>
     <string name="share_image">Share image</string>
-    <string name="quote_of_the_day">Quote of the day</string>
+    <string name="doml_quote_of_the_day">Quote of the day</string>
+    <string name="widget_title">It\'s your %d\'th day on earth</string>
     <string name="advertising">Advertising</string>
+    <string name="arithmetic_too_big">Number is too big!</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

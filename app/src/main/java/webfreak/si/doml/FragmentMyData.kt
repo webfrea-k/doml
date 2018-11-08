@@ -24,6 +24,8 @@ import webfreak.si.doml.objects.NextToOutliveEvent
 import webfreak.si.doml.objects.UpdateEvent
 import webfreak.si.doml.objects.UserBirthday
 import org.joda.time.format.DateTimeFormat
+import webfreak.si.doml.objects.ShowInterstitial
+import java.lang.ArithmeticException
 
 class FragmentMyData : Fragment() {
     private lateinit var mDatabase: DatabaseReference
@@ -73,7 +75,7 @@ class FragmentMyData : Fragment() {
             }
         })
 
-        val birthdaysComponents = arrayOf(1,1,2000)
+        val birthdaysComponents = arrayOf(1,0,2000)
         val datePicker = rootView.btn_select_birthday
         datePicker.setOnClickListener {
             val dpd = DatePickerDialog(activity, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -126,7 +128,9 @@ class FragmentMyData : Fragment() {
                             if(prefs.getLong(Const.BIRTHDAY,0) != daysAlive) {
                                 prefs.edit().putLong(Const.BIRTHDAY, daysAlive).apply()
                             }
-                            EventBus.getDefault().post(UpdateEvent(0, daysAlive))
+                            EventBus.getDefault().postSticky(UpdateEvent(0, daysAlive))
+                            kotlin.random.Random.nextBoolean()
+                            EventBus.getDefault().postSticky(ShowInterstitial(kotlin.random.Random.nextBoolean()))
                             restartHandlerRuns()
                         }
                     }
@@ -149,7 +153,11 @@ class FragmentMyData : Fragment() {
 
     fun updateCounters(birthDate: DateTime) {
         val period = Period(birthDate, DateTime())
-        digit_seconds.text = java.lang.String.format(getString(R.string.big_number_formatter), Seconds.secondsBetween(birthDate, DateTime()).seconds)
+        try {
+            digit_seconds.text = java.lang.String.format(getString(R.string.big_number_formatter), Seconds.secondsBetween(birthDate, DateTime()).seconds)
+        } catch (ex: ArithmeticException) {
+            digit_seconds.text = getString(R.string.arithmetic_too_big)
+        }
         digit_minutes.text = java.lang.String.format(getString(R.string.big_number_formatter), Minutes.minutesBetween(birthDate, DateTime()).minutes)
         digit_hours.text = java.lang.String.format(getString(R.string.big_number_formatter), Hours.hoursBetween(birthDate, DateTime()).hours)
         digit_days.text = java.lang.String.format(getString(R.string.big_number_formatter), Days.daysBetween(birthDate, DateTime()).days)
@@ -193,7 +201,7 @@ class FragmentMyData : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (!EventBus.getDefault().isRegistered(activity)) {
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
     }

@@ -10,20 +10,30 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import webfreak.si.doml.objects.ShowInterstitial
+import webfreak.si.doml.objects.ToggleSearchEvent
 import webfreak.si.doml.objects.UserBirthday
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
-
+    private lateinit var mInterstitialAd: InterstitialAd
+    private var searchVisible: Boolean = false
     /**
      * The [android.support.v4.view.PagerAdapter] that will provide
      * fragments for each of the sections. We use a
@@ -37,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val prefs = PreferenceHelper.defaultPrefs(this as Context)
 
         val uuid = java.util.UUID.randomUUID().toString()
@@ -64,22 +75,50 @@ class MainActivity : AppCompatActivity() {
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        fab.setOnClickListener { //view ->
+            EventBus.getDefault().post(ToggleSearchEvent(searchVisible))
+            searchVisible = !searchVisible
+            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            //    .setAction("Action", null).show()
         }
         MobileAds.initialize(this, "ca-app-pub-9883575696396484~4631354970")
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-9883575696396484/4456643893"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+
 
         fab.hide()
         container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
-                if (position !=0) { fab.hide() }
+                if (position !=1) { fab.hide() }
                 if (position == 1) {
+                    fab.show()
                 }
             }
         })
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onEvent(event: ShowInterstitial) {
+        if (mInterstitialAd.isLoaded && event.show) {
+            mInterstitialAd.show()
+        } else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.")
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

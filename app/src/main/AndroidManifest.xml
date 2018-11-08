@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="webfreak.si.doml">
-    <uses-permission android:name="android.permission.INTERNET" />
+          xmlns:tools="http://schemas.android.com/tools"
+          package="webfreak.si.doml">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
             android:allowBackup="true"
@@ -9,35 +11,50 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-
-            android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
+            android:theme="@style/AppTheme"
+            tools:ignore="GoogleAppIndexingWarning">
         <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9883575696396484~4631354970"/>
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="ca-app-pub-9883575696396484~4631354970"/>
+
         <activity
-                android:name="webfreak.si.doml.MainActivity"
+                android:name=".MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service android:name="webfreak.si.doml.services.NotificationService"
-                 android:exported="false">
+
+        <service
+                android:name=".services.NotificationService"
+                android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
         <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="webfreak.si.doml.fileprovider"
-                android:grantUriPermissions="true"
-                android:exported="false">
+                android:exported="false"
+                android:grantUriPermissions="true">
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/filepaths" />
+                    android:resource="@xml/filepaths"/>
         </provider>
+
+        <receiver android:name=".QouteOfTheDay">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/qoute_of_the_day_info"/>
+        </receiver>
     </application>
 
 </manifest>

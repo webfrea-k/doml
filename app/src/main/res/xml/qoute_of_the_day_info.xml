@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:minWidth="110dp"
+                    android:minHeight="40dp"
+                    android:updatePeriodMillis="21600000"
+                    android:previewImage="@drawable/example_appwidget_preview"
+                    android:initialLayout="@layout/qoute_of_the_day"
+                    android:resizeMode="horizontal|vertical"
+                    android:widgetCategory="home_screen|keyguard"
+                    android:initialKeyguardLayout="@layout/qoute_of_the_day">
+</appwidget-provider>

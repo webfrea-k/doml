@@ -21,6 +21,7 @@ import webfreak.si.doml.objects.Celebrity
 import org.greenrobot.eventbus.ThreadMode
 import org.greenrobot.eventbus.Subscribe
 import webfreak.si.doml.objects.NextToOutliveEvent
+import webfreak.si.doml.objects.ToggleSearchEvent
 import webfreak.si.doml.objects.UpdateEvent
 
 
@@ -28,13 +29,16 @@ class FragmentOutlived : Fragment() {
 
     lateinit var mAdView : AdView
     lateinit var adapter: CelebrityAdapter
-    private val list: ArrayList<Celebrity> = ArrayList()
+
     private var daysAlive = 0L
+    private var search: SearchView? = null
+    private val list: ArrayList<Celebrity> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_outlived, container, false)
         val prefs = PreferenceHelper.defaultPrefs(activity)
         val queue = Volley.newRequestQueue(context)
+        search = rootView.searchView
         daysAlive = prefs.getLong(Const.BIRTHDAY,0)
         val url = "https://webfreak.si/daysofmylifeoutlived.json"
         adapter = CelebrityAdapter(context!!, list, daysAlive)
@@ -61,10 +65,11 @@ class FragmentOutlived : Fragment() {
                 })
 
         queue.add(stringReq)
+        rootView.searchView.visibility = View.GONE
         rootView.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
-                var internalList: ArrayList<Celebrity> = ArrayList()
+                val internalList: ArrayList<Celebrity> = ArrayList()
                 for (item in list) {
                     if (item.getName().toLowerCase().contains(newText.toLowerCase())) {
                         internalList.add(item)
@@ -76,7 +81,6 @@ class FragmentOutlived : Fragment() {
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                //Task HERE
                 return false
             }
 
@@ -97,9 +101,15 @@ class FragmentOutlived : Fragment() {
             EventBus.getDefault().post(NextToOutliveEvent(it.getName(), it.getDaysLived() - event.value, it.getAvatar()))
         }
     }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onEvent(event: ToggleSearchEvent) {
+        search?.visibility = if (event.hidden) View.GONE else View.VISIBLE
+    }
+
     override fun onStart() {
         super.onStart()
-        if (!EventBus.getDefault().isRegistered(activity)) {
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
     }

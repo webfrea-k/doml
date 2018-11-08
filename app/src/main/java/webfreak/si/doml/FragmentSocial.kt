@@ -38,7 +38,6 @@ class FragmentSocial : Fragment() {
 
     lateinit var mAdView : AdView
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_social, container, false)
         val prefs = PreferenceHelper.defaultPrefs(activity)

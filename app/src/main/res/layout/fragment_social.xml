@@ -17,7 +17,7 @@
             <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
                 <TextView
                         style="@style/TitleView"
-                        android:text="@string/quote_of_the_day"
+                        android:text="@string/doml_quote_of_the_day"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/textView12"/>
             </TableRow>
@@ -60,11 +60,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/tvAdTitle"/>
             </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:layout_margin="5sp">
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
                 <com.google.android.gms.ads.AdView
                         xmlns:ads="http://schemas.android.com/apk/res-auto"
                         ads:adSize="SMART_BANNER"
-                        ads:adUnitId="ca-app-pub-9883575696396484/8587460594"
+                        ads:adUnitId="ca-app-pub-9883575696396484/9750412148"
                         android:id="@+id/adViewSocial"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
