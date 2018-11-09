@@ -38,9 +38,9 @@ class FragmentOutlived : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_outlived, container, false)
         val prefs = PreferenceHelper.defaultPrefs(activity)
         val queue = Volley.newRequestQueue(context)
+        val url = "https://admob-app-id-3010130871.firebaseapp.com/daysofmylifeoutlived.json"
         search = rootView.searchView
         daysAlive = prefs.getLong(Const.BIRTHDAY,0)
-        val url = "https://webfreak.si/daysofmylifeoutlived.json"
         adapter = CelebrityAdapter(context!!, list, daysAlive)
         rootView.outlived_list.adapter = adapter
 

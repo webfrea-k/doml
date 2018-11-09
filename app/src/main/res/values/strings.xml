@@ -18,7 +18,6 @@
     <string name="zero">0</string>
     <string name="default_date">01.01.2000</string>
     <string name="data_retrieval_failed">Failed to retrieve data. Please try again later.</string>
-    <string name="cancel">CANCEL</string>
     <string name="add">ADD</string>
     <string name="name">Name</string>
     <string name="nickname">Nickname</string>
@@ -33,7 +32,8 @@
     <string name="share">Share</string>
     <string name="share_image">Share image</string>
     <string name="doml_quote_of_the_day">Quote of the day</string>
-    <string name="widget_title">It\'s your %d\'th day on earth</string>
+    <string name="widget_title">It\'s your %s day on earth</string>
+    <string name="widget_title_empty">It\'s your 0th day on earth</string>
     <string name="advertising">Advertising</string>
     <string name="arithmetic_too_big">Number is too big!</string>
     <string name="add_widget">Add widget</string>

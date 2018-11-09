@@ -93,7 +93,7 @@ class FragmentMyData : Fragment() {
                 birthday.setText(birthdayDate)
                 mDatabase.child("users").child(prefs.getString(Const.GLOBAL_USER_ID,"todo")!!).setValue(user)
 
-                prefs.edit().putLong(Const.DAYS_ALIVE,getDaysToNow(birthdayDateDate)).apply()
+                prefs.edit().putLong(Const.DAYS_ALIVE, getDaysToNow(birthdayDateDate)).apply()
 
                 EventBus.getDefault().post(UpdateEvent(0, getDaysToNow(birthdayDateDate)))
                 actualBirthdayDate = birthdayDateDate
@@ -129,8 +129,9 @@ class FragmentMyData : Fragment() {
                                 prefs.edit().putLong(Const.BIRTHDAY, daysAlive).apply()
                             }
                             EventBus.getDefault().postSticky(UpdateEvent(0, daysAlive))
-                            kotlin.random.Random.nextBoolean()
-                            EventBus.getDefault().postSticky(ShowInterstitial(kotlin.random.Random.nextBoolean()))
+                            val random = kotlin.random.Random.nextInt(0,10)
+                            //display ad probability 3/7
+                            EventBus.getDefault().postSticky(ShowInterstitial(random > 7))
                             restartHandlerRuns()
                         }
                     }
@@ -167,11 +168,15 @@ class FragmentMyData : Fragment() {
 
     private fun getDaysToNowFromString(birth: Long): Long {
         val birthDate = DateTime(birth)
-        return Days.daysBetween(birthDate, DateTime()).days.toLong()
+        val currentDate = DateTime()
+        val cd = currentDate.hourOfDay().setCopy(0)
+        return Days.daysBetween(birthDate, cd).days.toLong()
     }
 
     private fun getDaysToNow(birthDate: DateTime): Long {
-        return Days.daysBetween(birthDate, DateTime()).days.toLong()
+        val currentDate = DateTime()
+        val cd = currentDate.hourOfDay().setCopy(0)
+        return Days.daysBetween(birthDate, cd).days.toLong()
     }
     private fun convertDateToLong(date: String): Long {
         val df = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)

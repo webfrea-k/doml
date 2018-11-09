@@ -12,11 +12,6 @@ import com.bumptech.glide.request.RequestOptions
 import webfreak.si.doml.transformations.ShareImage
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.Bitmap
-import android.R.attr.bitmap
-import android.net.Uri
-import android.provider.MediaStore.Images
-import android.R.attr.bitmap
-import android.R.attr.bitmap
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -28,9 +23,14 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
-import kotlinx.android.synthetic.main.fragment_outlived.view.*
+import kotlinx.android.synthetic.main.fragment_my_data.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.json.JSONArray
 import org.json.JSONObject
+import webfreak.si.doml.objects.NextToOutliveEvent
+import webfreak.si.doml.objects.ShowNormalAd
 import kotlin.random.Random
 
 
@@ -43,7 +43,7 @@ class FragmentSocial : Fragment() {
         val prefs = PreferenceHelper.defaultPrefs(activity)
         val daysAlive = prefs.getLong(Const.DAYS_ALIVE,0)
         val queue = Volley.newRequestQueue(context)
-        val url = "https://webfreak.si/daysofmylifequotes.json"
+        val url = "https://admob-app-id-3010130871.firebaseapp.com/daysofmylifequotes.json"
 
         val stringReq = StringRequest(
             Request.Method.GET, url,
@@ -93,18 +93,31 @@ class FragmentSocial : Fragment() {
                 Toast.makeText(context, getString(R.string.data_retrieval_failed), Toast.LENGTH_SHORT).show()
             }
         }
-
         mAdView = rootView.adViewSocial
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
-
         return rootView
     }
-    fun loadImage(rootView: View, daysAlive: Long, quote: String){
+    override fun onStart() {
+        super.onStart()
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onEvent(event: ShowNormalAd) {
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+    }
+    private fun loadImage(rootView: View, daysAlive: Long, quote: String){
         context?.let { c ->
             Glide.with(this)
                 .asBitmap()
-                .load("https://picsum.photos/900/600?day=$daysAlive")
+                .load("https://picsum.photos/900/600/?random&day=$daysAlive")
                 .apply(RequestOptions().transform(ShareImage(c, quote)))
                 .into(rootView.shareImage)
         }

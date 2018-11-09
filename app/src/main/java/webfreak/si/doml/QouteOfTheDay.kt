@@ -11,6 +11,9 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.random.Random
+import android.app.PendingIntent
+import android.content.Intent
+
 
 /**
  * Implementation of App Widget functionality.
@@ -37,7 +40,7 @@ class QouteOfTheDay : AppWidgetProvider() {
             val prefs = PreferenceHelper.defaultPrefs(context)
             val daysAlive = prefs.getLong(Const.DAYS_ALIVE,0)
             val queue = Volley.newRequestQueue(context)
-            val url = "https://webfreak.si/daysofmylifequotes.json"
+            val url = "https://admob-app-id-3010130871.firebaseapp.com/daysofmylifequotes.json"
             val stringReq = StringRequest(
                 Request.Method.GET, url,
                 Response.Listener<String> { response ->
@@ -45,18 +48,50 @@ class QouteOfTheDay : AppWidgetProvider() {
                     val jsonObj = JSONObject(strResp)
                     val jsonArray: JSONArray = jsonObj.getJSONArray("quote")
                     val randQuote = jsonArray.getJSONObject(Random.nextInt(0, jsonArray.length()-1))
-                    prefs.edit().putString(Const.DAILY_QUOTE, daysAlive.toString() + "|" + randQuote.get("name").toString()).apply()
-                    val widgetText =  java.lang.String.format(context.getString(R.string.widget_title), daysAlive)
+                    val currentQuote = prefs.getString(Const.DAILY_QUOTE,"0| ")
+                    val oldDaysAlive = currentQuote?.split("|")?.first()
+                    var dailyQuote = randQuote.get("name").toString()
+                    oldDaysAlive?.let {
+                        if (it.toLong() != daysAlive) {
+                            prefs.edit().putString(Const.DAILY_QUOTE, daysAlive.toString() + "|" + dailyQuote).apply()
+                        } else {
+                            prefs.getString(Const.DAILY_QUOTE, "0| ")?.split("|")?.last()?.let { quote ->
+                                dailyQuote = quote
+                            }
+                        }
+                    }
+
+                    val ord = ordinal(daysAlive.toInt())
+                    val widgetText =  java.lang.String.format(context.getString(R.string.widget_title), ord)
+
+                    val intent = Intent(context, MainActivity::class.java)
+                    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
                     // Construct the RemoteViews object
-                    val views = RemoteViews(context.packageName, R.layout.qoute_of_the_day)
+                    val views = RemoteViews(context.packageName, R.layout.widget_layout)
+                    views.setOnClickPendingIntent(R.id.dailyQuote, pendingIntent)
+                    views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
+
                     views.setTextViewText(R.id.appwidget_text, widgetText)
-                    views.setTextViewText(R.id.dailyQuote, randQuote.get("name").toString())
+                    views.setTextViewText(R.id.dailyQuote, dailyQuote)
+
                     appWidgetManager.updateAppWidget(appWidgetId, views)
                 },
                 Response.ErrorListener {})
             queue.add(stringReq)
         }
+
+        private fun ordinal(i: Int): String {
+            val suffixes = arrayOf("th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th")
+            return when (i % 100) {
+                11, 12, 13 -> {
+                    i.toString() + "th"
+                }
+                else -> i.toString() + suffixes[i % 10]
+            }
+        }
     }
+
+
 }
 

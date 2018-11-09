@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import webfreak.si.doml.objects.ShowInterstitial
+import webfreak.si.doml.objects.ShowNormalAd
 import webfreak.si.doml.objects.ToggleSearchEvent
 import webfreak.si.doml.objects.UserBirthday
 
@@ -95,6 +96,9 @@ class MainActivity : AppCompatActivity() {
                 if (position !=1) { fab.hide() }
                 if (position == 1) {
                     fab.show()
+                }
+                if (position == 2) {
+                    EventBus.getDefault().postSticky(ShowNormalAd(kotlin.random.Random.nextBoolean()))
                 }
             }
         })

@@ -66,7 +66,7 @@
                         ads:adSize="SMART_BANNER"
                         ads:adUnitId="ca-app-pub-9883575696396484/9750412148"
                         android:id="@+id/adViewSocial"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
             </TableRow>
         </TableLayout>

@@ -8,8 +8,8 @@ android {
         applicationId "webfreak.si.doml"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 20
-        versionName "2.0.10"
+        versionCode 22
+        versionName "2.0.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -33,17 +33,19 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.5'
     implementation 'com.google.firebase:firebase-database:16.0.4'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.android.gms:play-services-ads:17.1.0'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.google.android.gms:play-services-ads:17.0.0'
+    
     implementation 'com.android.volley:volley:1.1.1'
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'joda-time:joda-time:2.9.9'
     implementation 'org.greenrobot:eventbus:3.1.1'
+
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
 }
 
