@@ -13,6 +13,9 @@ import org.json.JSONObject
 import kotlin.random.Random
 import android.app.PendingIntent
 import android.content.Intent
+import org.joda.time.DateTime
+import org.joda.time.Days
+import webfreak.si.doml.R.id.dailyQuote
 
 
 /**
@@ -38,9 +41,9 @@ class QouteOfTheDay : AppWidgetProvider() {
     companion object {
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val prefs = PreferenceHelper.defaultPrefs(context)
-            val daysAlive = prefs.getLong(Const.DAYS_ALIVE,0)
+            val daysAlive =Static.getDaysAlive(context)
             val queue = Volley.newRequestQueue(context)
-            val url = "https://admob-app-id-3010130871.firebaseapp.com/daysofmylifequotes.json"
+            val url = "https://days-of-my-life-57a3c.firebaseapp.com/daysofmylifequotes.json"
             val stringReq = StringRequest(
                 Request.Method.GET, url,
                 Response.Listener<String> { response ->
@@ -52,7 +55,7 @@ class QouteOfTheDay : AppWidgetProvider() {
                     val oldDaysAlive = currentQuote?.split("|")?.first()
                     var dailyQuote = randQuote.get("name").toString()
                     oldDaysAlive?.let {
-                        if (it.toLong() != daysAlive) {
+                        if (it.toLong() != daysAlive.toLong()) {
                             prefs.edit().putString(Const.DAILY_QUOTE, daysAlive.toString() + "|" + dailyQuote).apply()
                         } else {
                             prefs.getString(Const.DAILY_QUOTE, "0| ")?.split("|")?.last()?.let { quote ->
@@ -61,7 +64,7 @@ class QouteOfTheDay : AppWidgetProvider() {
                         }
                     }
 
-                    val ord = ordinal(daysAlive.toInt())
+                    val ord = ordinal(daysAlive)
                     val widgetText =  java.lang.String.format(context.getString(R.string.widget_title), ord)
 
                     val intent = Intent(context, MainActivity::class.java)
@@ -91,7 +94,5 @@ class QouteOfTheDay : AppWidgetProvider() {
             }
         }
     }
-
-
 }
 

@@ -64,9 +64,11 @@ class MainActivity : AppCompatActivity() {
                     val map = HashMap<String, Long>()
                     map[Const.YOU] = 0
                     map[Const.ADD_NEW] = 0
-                    val user = UserBirthday(map, prefs.getString(Const.GLOBAL_USER_ID, "todo")!!)
-                    mDatabase.child("users").child(user.id).setValue(user)
-                    prefs.edit().putBoolean(Const.ADDED_TO_DB, true).apply()
+                    val user = UserBirthday(map)
+                    prefs.getString(Const.GLOBAL_USER_ID, "todo")?.let {
+                        mDatabase.child("users").child(it).setValue(user)
+                        prefs.edit().putBoolean(Const.ADDED_TO_DB, true).apply()
+                    }
                 }
             }
         setSupportActionBar(toolbar)
@@ -76,11 +78,9 @@ class MainActivity : AppCompatActivity() {
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
-        fab.setOnClickListener { //view ->
+        fab.setOnClickListener {
             EventBus.getDefault().post(ToggleSearchEvent(searchVisible))
             searchVisible = !searchVisible
-            //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            //    .setAction("Action", null).show()
         }
         MobileAds.initialize(this, "ca-app-pub-9883575696396484~4631354970")
         mInterstitialAd = InterstitialAd(this)

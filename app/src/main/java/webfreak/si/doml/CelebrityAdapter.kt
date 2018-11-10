@@ -1,6 +1,5 @@
 package webfreak.si.doml
 
-import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
@@ -12,8 +11,9 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.outlived_list_item.view.*
 import webfreak.si.doml.objects.Celebrity
 import android.support.v4.app.FragmentActivity
+import java.lang.Math.abs
 
-class CelebrityAdapter(private var c: Context, private var celebrities: ArrayList<Celebrity>, days: Long) : BaseAdapter() {
+class CelebrityAdapter(private var c: Context, celebrities: ArrayList<Celebrity>, days: Long) : BaseAdapter() {
 
     override fun getCount(): Int   {  return celebs.size  }
     override fun getItem(i: Int): Any {  return celebs[i] }
@@ -21,8 +21,8 @@ class CelebrityAdapter(private var c: Context, private var celebrities: ArrayLis
     var daysAlive = days
     var celebs = celebrities
 
-    override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View {
-        var view = view
+    override fun getView(i: Int, v: View?, viewGroup: ViewGroup): View {
+        var view = v
         if (view == null) {
             view = LayoutInflater.from(c).inflate(R.layout.outlived_list_item, viewGroup, false)
         }
@@ -34,11 +34,11 @@ class CelebrityAdapter(private var c: Context, private var celebrities: ArrayLis
         nameTxt.text = celebrity.getName()
 
         val difference = daysAlive - celebrity.getDaysLived()
-        if (difference > 0) {
+        if (difference >= 0) {
             propTxt.text = java.lang.String.format(c.getString(R.string.outlived_by), difference)
             propTxt.setTextColor(ContextCompat.getColor(c, R.color.colorPrimaryDark))
         } else {
-            propTxt.text = java.lang.String.format(c.getString(R.string.days_more), difference)
+            propTxt.text = java.lang.String.format(c.getString(R.string.days_more), abs(difference))
             propTxt.setTextColor(Color.RED)
         }
 
@@ -49,7 +49,7 @@ class CelebrityAdapter(private var c: Context, private var celebrities: ArrayLis
                 img.setImageResource(R.drawable.avatar)
             }
         }
-        view.setOnClickListener { it
+        view.setOnClickListener {
             val activity = c as FragmentActivity
             val fm = activity.supportFragmentManager
             val pop = FragmentCelebrityDetails.newInstance("",0,celebrity)

@@ -27,6 +27,8 @@ import kotlinx.android.synthetic.main.fragment_my_data.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.joda.time.DateTime
+import org.joda.time.Days
 import org.json.JSONArray
 import org.json.JSONObject
 import webfreak.si.doml.objects.NextToOutliveEvent
@@ -41,9 +43,9 @@ class FragmentSocial : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_social, container, false)
         val prefs = PreferenceHelper.defaultPrefs(activity)
-        val daysAlive = prefs.getLong(Const.DAYS_ALIVE,0)
+        val daysAlive = Static.getDaysAlive(context!!)
         val queue = Volley.newRequestQueue(context)
-        val url = "https://admob-app-id-3010130871.firebaseapp.com/daysofmylifequotes.json"
+        val url = "https://days-of-my-life-57a3c.firebaseapp.com/daysofmylifequotes.json"
 
         val stringReq = StringRequest(
             Request.Method.GET, url,
@@ -52,8 +54,9 @@ class FragmentSocial : Fragment() {
                 val jsonObj = JSONObject(strResp)
                 val jsonArray: JSONArray = jsonObj.getJSONArray("quote")
                 val randQuote = jsonArray.getJSONObject(Random.nextInt(0, jsonArray.length()-1))
-                prefs.edit().putString(Const.DAILY_QUOTE, daysAlive.toString() + "|" + randQuote.get("name").toString()).apply()
-                loadImage(rootView, daysAlive, randQuote.get("name").toString())
+                val randQuoteString = randQuote.get("name").toString()
+                prefs.edit().putString(Const.DAILY_QUOTE, daysAlive.toString() + "|" + randQuoteString).apply()
+                loadImage(rootView, daysAlive, randQuoteString)
 
             },
             Response.ErrorListener {
@@ -113,7 +116,7 @@ class FragmentSocial : Fragment() {
         val adRequest = AdRequest.Builder().build()
         mAdView.loadAd(adRequest)
     }
-    private fun loadImage(rootView: View, daysAlive: Long, quote: String){
+    private fun loadImage(rootView: View, daysAlive: Int, quote: String){
         context?.let { c ->
             Glide.with(this)
                 .asBitmap()

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,20 +13,17 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.bumptech.glide.Glide
 import com.google.firebase.database.*
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlinx.android.synthetic.main.fragment_my_data.*
 import kotlinx.android.synthetic.main.fragment_my_data.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.joda.time.*
-import webfreak.si.doml.objects.NextToOutliveEvent
-import webfreak.si.doml.objects.UpdateEvent
-import webfreak.si.doml.objects.UserBirthday
 import org.joda.time.format.DateTimeFormat
-import webfreak.si.doml.objects.ShowInterstitial
+import webfreak.si.doml.R.id.*
+import webfreak.si.doml.objects.*
 import java.lang.ArithmeticException
+import kotlin.system.measureTimeMillis
 
 class FragmentMyData : Fragment() {
     private lateinit var mDatabase: DatabaseReference
@@ -35,11 +33,13 @@ class FragmentMyData : Fragment() {
     private var actualBirthdayDate = DateTime()
     private var handler = Handler()
     private lateinit var runnableCode: Runnable
+    private lateinit var nextToOutliveView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val prefs = PreferenceHelper.defaultPrefs(activity)
         val rootView = inflater.inflate(R.layout.fragment_my_data, container, false)
         val birthday = rootView.edit_birthday
+        nextToOutliveView = rootView.next_to_outlive_view
         globalUserId = prefs.getString(Const.GLOBAL_USER_ID,"") ?: ""
         mDatabase = FirebaseDatabase.getInstance().reference
         mDatabase.child("users").child(globalUserId).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -62,8 +62,7 @@ class FragmentMyData : Fragment() {
                             it.adapter = ArrayAdapter(activity, R.layout.spinner_item, trackedUsers)
                             user?.birthdays?.get(person_spinner.selectedItem)?.let {time ->
                                 birthday.setText(convertLongToTime(time))
-                                prefs.edit().putLong(Const.DAYS_ALIVE, getDaysToNowFromString(time)).apply()
-
+                                //prefs.edit().putLong(Const.DAYS_ALIVE, getDaysToNowFromString(time)).apply()
                             }
                         }
                     }
@@ -85,15 +84,13 @@ class FragmentMyData : Fragment() {
                 if (user == null) {
                     user = UserBirthday()
                 }
-                user?.birthdays?.set(rootView.person_spinner.selectedItem.toString(),
-                    convertDateToLong(birthdayDate)
-                )
+                user?.birthdays?.set(rootView.person_spinner.selectedItem.toString(), convertDateToLong(year, monthOfYear + 1, dayOfMonth))
                 user?.token = prefs.getString(Const.TOKEN, "")!!
 
                 birthday.setText(birthdayDate)
                 mDatabase.child("users").child(prefs.getString(Const.GLOBAL_USER_ID,"todo")!!).setValue(user)
 
-                prefs.edit().putLong(Const.DAYS_ALIVE, getDaysToNow(birthdayDateDate)).apply()
+                //prefs.edit().putLong(Const.DAYS_ALIVE, getDaysToNow(birthdayDateDate)).apply()
 
                 EventBus.getDefault().post(UpdateEvent(0, getDaysToNow(birthdayDateDate)))
                 actualBirthdayDate = birthdayDateDate
@@ -101,8 +98,8 @@ class FragmentMyData : Fragment() {
             }, birthdaysComponents[2], birthdaysComponents[1], birthdaysComponents[0])
             dpd.show()
         }
-        rootView.person_spinner.adapter = ArrayAdapter(activity, R.layout.spinner_item, trackedUsers)
 
+        rootView.person_spinner.adapter = ArrayAdapter(activity, R.layout.spinner_item, trackedUsers)
         rootView.person_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
@@ -114,21 +111,18 @@ class FragmentMyData : Fragment() {
                     pop.setTargetFragment(this@FragmentMyData, 1000)
                     pop.show(fm, "Add Person")
                 } else {
-                    user?.birthdays?.get(text).let {
-                        if(it == 0L || it == null) {
+                    user?.birthdays?.get(text)?.let {
+                        if(it == 0L) {
                             birthday.text.clear()
                             datePicker.performClick()
                         } else {
                             birthday.setText(convertLongToTime(it))
-                            val currentDate = DateTime()
-                            val birthDate = DateTime(it)
+                            val birthDate = DateTime(it).withTimeAtStartOfDay()
                             actualBirthdayDate = birthDate
-                            val minutesAlive = Minutes.minutesBetween(birthDate, currentDate).minutes
-                            val daysAlive = (minutesAlive / 60L) / 24L
-                            if(prefs.getLong(Const.BIRTHDAY,0) != daysAlive) {
-                                prefs.edit().putLong(Const.BIRTHDAY, daysAlive).apply()
+                            if(prefs.getLong(Const.BIRTHDAY,0) != birthDate.millis) {
+                                prefs.edit().putLong(Const.BIRTHDAY, birthDate.millis).apply()
                             }
-                            EventBus.getDefault().postSticky(UpdateEvent(0, daysAlive))
+                            EventBus.getDefault().postSticky(UpdateEvent(0, Static.getDaysAlive(context!!).toLong()))
                             val random = kotlin.random.Random.nextInt(0,10)
                             //display ad probability 3/7
                             EventBus.getDefault().postSticky(ShowInterstitial(random > 7))
@@ -138,6 +132,7 @@ class FragmentMyData : Fragment() {
                 }
             }
         }
+
         return rootView
     }
 
@@ -153,40 +148,42 @@ class FragmentMyData : Fragment() {
     }
 
     fun updateCounters(birthDate: DateTime) {
-        val period = Period(birthDate, DateTime())
+        val currentDate = DateTime().plusDays(1)
+        val period = Period(birthDate, currentDate)
         try {
-            digit_seconds.text = java.lang.String.format(getString(R.string.big_number_formatter), Seconds.secondsBetween(birthDate, DateTime()).seconds)
+            digit_seconds.text = java.lang.String.format(getString(R.string.big_number_formatter), Seconds.secondsBetween(birthDate, currentDate).seconds)
         } catch (ex: ArithmeticException) {
             digit_seconds.text = getString(R.string.arithmetic_too_big)
         }
-        digit_minutes.text = java.lang.String.format(getString(R.string.big_number_formatter), Minutes.minutesBetween(birthDate, DateTime()).minutes)
-        digit_hours.text = java.lang.String.format(getString(R.string.big_number_formatter), Hours.hoursBetween(birthDate, DateTime()).hours)
-        digit_days.text = java.lang.String.format(getString(R.string.big_number_formatter), Days.daysBetween(birthDate, DateTime()).days)
-        digit_months.text = java.lang.String.format(getString(R.string.big_number_formatter), Months.monthsBetween(birthDate, DateTime()).months)
+
+        digit_minutes.text = java.lang.String.format(getString(R.string.big_number_formatter), Minutes.minutesBetween(birthDate, currentDate).minutes)
+        digit_hours.text = java.lang.String.format(getString(R.string.big_number_formatter), Hours.hoursBetween(birthDate, currentDate).hours)
+        digit_days.text = java.lang.String.format(getString(R.string.big_number_formatter), Days.daysBetween(birthDate, currentDate).days)
+        digit_months.text = java.lang.String.format(getString(R.string.big_number_formatter), Months.monthsBetween(birthDate, currentDate).months)
         digit_years.text = java.lang.String.format(getString(R.string.big_number_formatter), period.years)
     }
 
     private fun getDaysToNowFromString(birth: Long): Long {
         val birthDate = DateTime(birth)
-        val currentDate = DateTime()
-        val cd = currentDate.hourOfDay().setCopy(0)
-        return Days.daysBetween(birthDate, cd).days.toLong()
+        val currentDate = DateTime().plusDays(1).withTimeAtStartOfDay()
+        return Days.daysBetween(birthDate, currentDate).days.toLong()
     }
 
     private fun getDaysToNow(birthDate: DateTime): Long {
-        val currentDate = DateTime()
-        val cd = currentDate.hourOfDay().setCopy(0)
-        return Days.daysBetween(birthDate, cd).days.toLong()
+        val currentDate = DateTime().plusDays(1).withTimeAtStartOfDay()
+        return Days.daysBetween(birthDate, currentDate).days.toLong()
     }
-    private fun convertDateToLong(date: String): Long {
-        val df = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
-        return df.parse(date).time
+    private fun convertDateToLong(year: Int, month: Int, day: Int): Long {
+        var date = DateTime(DateTimeZone.UTC).withTimeAtStartOfDay()
+        date = date.withYear(year)
+        date = date.withMonthOfYear(month)
+        date = date.withDayOfMonth(day)
+        return date.millis
     }
 
     fun convertLongToTime(time: Long): String {
-        val date = Date(time)
-        val format = SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN)
-        return format.format(date)
+        val date = DateTime(time)
+        return date.toString("dd.MM.yyyy")
     }
 
     @Override
@@ -220,7 +217,20 @@ class FragmentMyData : Fragment() {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onEvent(event: NextToOutliveEvent) {
         next_to_outlive_title.text = event.name
-        next_to_outlive_subtitle.text = java.lang.String.format(getString(R.string.days_more), event.daysMore)
+        if (event.daysMore == 0L) {
+            next_to_outlive_subtitle.text = getString(R.string.outlived_today)
+        } else {
+            next_to_outlive_subtitle.text = java.lang.String.format(getString(R.string.days_more), event.daysMore)
+        }
         Glide.with(this).load(event.avatar).into(avatar)
+
+        nextToOutliveView.setOnClickListener {
+            val activity = context as FragmentActivity
+            val fm = activity.supportFragmentManager
+            val pop = FragmentCelebrityDetails.newInstance("",0, Celebrity(event.name,123,event.avatar))
+            pop.setTargetFragment(fm.primaryNavigationFragment, 1000)
+            pop.show(fm, "Celebrity details")
+        }
+
     }
 }

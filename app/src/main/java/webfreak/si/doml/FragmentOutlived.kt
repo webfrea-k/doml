@@ -27,7 +27,7 @@ import webfreak.si.doml.objects.UpdateEvent
 
 class FragmentOutlived : Fragment() {
 
-    lateinit var mAdView : AdView
+    private lateinit var mAdView : AdView
     lateinit var adapter: CelebrityAdapter
 
     private var daysAlive = 0L
@@ -38,7 +38,7 @@ class FragmentOutlived : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_outlived, container, false)
         val prefs = PreferenceHelper.defaultPrefs(activity)
         val queue = Volley.newRequestQueue(context)
-        val url = "https://admob-app-id-3010130871.firebaseapp.com/daysofmylifeoutlived.json"
+        val url = "https://days-of-my-life-57a3c.firebaseapp.com/daysofmylifeoutlived.json"
         search = rootView.searchView
         daysAlive = prefs.getLong(Const.BIRTHDAY,0)
         adapter = CelebrityAdapter(context!!, list, daysAlive)
@@ -96,7 +96,7 @@ class FragmentOutlived : Fragment() {
     fun onEvent(event: UpdateEvent) {
         adapter.daysAlive = event.value
         adapter.notifyDataSetChanged()
-        val celebrity = list.find { s -> s.getDaysLived() > event.value }
+        val celebrity = list.find { s -> s.getDaysLived() >= event.value }
         celebrity?.let {
             EventBus.getDefault().post(NextToOutliveEvent(it.getName(), it.getDaysLived() - event.value, it.getAvatar()))
         }

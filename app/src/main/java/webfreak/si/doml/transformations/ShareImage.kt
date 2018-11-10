@@ -14,16 +14,19 @@ import android.text.TextPaint
 
 class ShareImage(ctx: Context, quote: String) : BitmapTransformation() {
 
-    val context: Context = ctx
-    val q: String = quote
+    private val context: Context = ctx
+    private val q: String = quote
+
     override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
-        return drawMultilineTextToBitmap(context, toTransform, q)
+        val bm = drawMultilineTextToBitmap(context, toTransform, q)
+        bm.density = context.resources.displayMetrics.density.toInt()
+        return bm
     }
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {}
 
-    fun drawMultilineTextToBitmap(gContext: Context, gResId: Bitmap, gText: String): Bitmap {
-        var gText = gText
+    private fun drawMultilineTextToBitmap(gContext: Context, gResId: Bitmap, text: String): Bitmap {
+        var gText = text
         if (gText.contains("You have just")) {
             gText = gText.replace("You have just", "I have just")
         }
@@ -37,7 +40,7 @@ class ShareImage(ctx: Context, quote: String) : BitmapTransformation() {
         if (bitmapConfig == null) {
             bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888
         }
-        // resource bitmaps are imutable,
+        // resource bitmaps are immutable,
         // so we need to convert it to mutable one
         bitmap = bitmap.copy(bitmapConfig, true)
 
@@ -66,7 +69,7 @@ class ShareImage(ctx: Context, quote: String) : BitmapTransformation() {
         // init StaticLayout for text
         val textLayout = StaticLayout(gText, paint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false)
         val signatureLayout = StaticLayout("@DaysOfMyLife", signature, textWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
-        val signatureLayout2 = StaticLayout("goo.gl/PTBn6D", signature, textWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
+        val signatureLayout2 = StaticLayout("bit.ly/domlApp", signature, textWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false)
 
         // get height of multiline text
         val textHeight = textLayout.height

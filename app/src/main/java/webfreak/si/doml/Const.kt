@@ -8,7 +8,7 @@ class Const {
         const val ADD_NEW = "+ Add person"
         const val ADDED_TO_DB = "ADDED_TO_DB"
         const val TOKEN = "TOKEN"
-        const val DAYS_ALIVE = "DAYS_ALIVE"
+        //const val DAYS_ALIVE = "DAYS_ALIVE"
         const val DAILY_QUOTE = "DAILY_QUOTE"
     }
 }

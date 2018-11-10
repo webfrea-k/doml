@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:background="@color/lighterGray" android:layout_width="match_parent" android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools" android:background="@color/lighterGray" android:layout_width="match_parent" android:layout_height="match_parent">
     <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:orientation="vertical">
@@ -46,13 +47,16 @@
                                     android:hint="@string/select_birthday"
                                     style="@style/SubtitleViewBlack"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content" android:id="@+id/edit_birthday"/>
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/edit_birthday" tools:ignore="Autofill"/>
                             <ImageButton
+                                    android:contentDescription="@string/content_description"
                                     android:layout_margin="10sp"
                                     android:layout_weight="10"
                                     android:background="@null"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content" app:srcCompat="@drawable/calendar_icon"
+                                    android:layout_height="wrap_content"
+                                    app:srcCompat="@drawable/calendar_icon"
                                     android:id="@+id/btn_select_birthday"/>
                     </TableRow>
                 </TableLayout>
@@ -155,6 +159,7 @@
                 </TableLayout>
             </android.support.v7.widget.CardView>
             <android.support.v7.widget.CardView
+                    android:id="@+id/next_to_outlive_view"
                     app:layout_constraintTop_toBottomOf="@id/card_view_counters"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

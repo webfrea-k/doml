@@ -37,5 +37,7 @@
     <string name="advertising">Advertising</string>
     <string name="arithmetic_too_big">Number is too big!</string>
     <string name="add_widget">Add widget</string>
+    <string name="outlived_today">Outlived today!</string>
+    <string name="content_description">Content description</string>
 
 </resources>
