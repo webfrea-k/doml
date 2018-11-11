@@ -8,15 +8,9 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import org.json.JSONArray
-import org.json.JSONObject
-import kotlin.random.Random
 import android.app.PendingIntent
 import android.content.Intent
-import org.joda.time.DateTime
-import org.joda.time.Days
-import webfreak.si.doml.R.id.dailyQuote
-
+import kotlin.text.Typography.quote
 
 /**
  * Implementation of App Widget functionality.
@@ -41,47 +35,44 @@ class QouteOfTheDay : AppWidgetProvider() {
     companion object {
         internal fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val prefs = PreferenceHelper.defaultPrefs(context)
-            val daysAlive =Static.getDaysAlive(context)
+            val daysAlive = Static.getDaysAlive(context)
             val queue = Volley.newRequestQueue(context)
-            val url = "https://days-of-my-life-57a3c.firebaseapp.com/daysofmylifequotes.json"
+            val currentQuote = prefs.getString(Const.DAILY_QUOTE,"0| ")
+            val oldDaysAlive = currentQuote?.split("|")?.first()
+            val ord = ordinal(daysAlive)
+            val widgetText =  java.lang.String.format(context.getString(R.string.widget_title), ord)
+            val intent = Intent(context, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+            val url = "https://us-central1-days-of-my-life-57a3c.cloudfunctions.net/getQuote?daysAlive=$daysAlive"
             val stringReq = StringRequest(
                 Request.Method.GET, url,
                 Response.Listener<String> { response ->
                     val strResp = response.toString()
-                    val jsonObj = JSONObject(strResp)
-                    val jsonArray: JSONArray = jsonObj.getJSONArray("quote")
-                    val randQuote = jsonArray.getJSONObject(Random.nextInt(0, jsonArray.length()-1))
-                    val currentQuote = prefs.getString(Const.DAILY_QUOTE,"0| ")
-                    val oldDaysAlive = currentQuote?.split("|")?.first()
-                    var dailyQuote = randQuote.get("name").toString()
-                    oldDaysAlive?.let {
-                        if (it.toLong() != daysAlive.toLong()) {
-                            prefs.edit().putString(Const.DAILY_QUOTE, daysAlive.toString() + "|" + dailyQuote).apply()
-                        } else {
-                            prefs.getString(Const.DAILY_QUOTE, "0| ")?.split("|")?.last()?.let { quote ->
-                                dailyQuote = quote
-                            }
-                        }
-                    }
-
-                    val ord = ordinal(daysAlive)
-                    val widgetText =  java.lang.String.format(context.getString(R.string.widget_title), ord)
-
-                    val intent = Intent(context, MainActivity::class.java)
-                    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-
-                    // Construct the RemoteViews object
+                    prefs.edit().putString(Const.DAILY_QUOTE, "$daysAlive|$strResp").apply()
                     val views = RemoteViews(context.packageName, R.layout.widget_layout)
                     views.setOnClickPendingIntent(R.id.dailyQuote, pendingIntent)
                     views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
-
                     views.setTextViewText(R.id.appwidget_text, widgetText)
-                    views.setTextViewText(R.id.dailyQuote, dailyQuote)
-
+                    views.setTextViewText(R.id.dailyQuote, strResp)
                     appWidgetManager.updateAppWidget(appWidgetId, views)
                 },
                 Response.ErrorListener {})
-            queue.add(stringReq)
+
+            oldDaysAlive?.let {
+                if (it.toInt() != daysAlive) {
+                    queue.add(stringReq)
+                } else {
+                    prefs.getString(Const.DAILY_QUOTE, "0| ")?.split("|")?.last()?.let { quote ->
+                        val views = RemoteViews(context.packageName, R.layout.widget_layout)
+                        views.setOnClickPendingIntent(R.id.dailyQuote, pendingIntent)
+                        views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
+                        views.setTextViewText(R.id.appwidget_text, widgetText)
+                        views.setTextViewText(R.id.dailyQuote, quote)
+                        appWidgetManager.updateAppWidget(appWidgetId, views)
+                    }
+                }
+            }
         }
 
         private fun ordinal(i: Int): String {

@@ -54,17 +54,21 @@
         <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="100">
                 <TextView
+                        android:layout_weight="100"
+
                         style="@style/TitleView"
                         android:text="@string/advertising"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:id="@+id/tvAdTitle"/>
             </TableRow>
-            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:paddingBottom="15sp">
                 <com.google.android.gms.ads.AdView
+                        android:layout_weight="100"
+                        android:layout_gravity="center"
                         xmlns:ads="http://schemas.android.com/apk/res-auto"
-                        ads:adSize="SMART_BANNER"
+                        ads:adSize="BANNER"
                         ads:adUnitId="ca-app-pub-9883575696396484/9750412148"
                         android:id="@+id/adViewSocial"
                         android:layout_width="match_parent"

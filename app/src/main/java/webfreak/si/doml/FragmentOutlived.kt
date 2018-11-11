@@ -36,7 +36,7 @@ class FragmentOutlived : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_outlived, container, false)
-        val prefs = PreferenceHelper.defaultPrefs(activity)
+        val prefs = PreferenceHelper.defaultPrefs(context!!)
         val queue = Volley.newRequestQueue(context)
         val url = "https://days-of-my-life-57a3c.firebaseapp.com/daysofmylifeoutlived.json"
         search = rootView.searchView

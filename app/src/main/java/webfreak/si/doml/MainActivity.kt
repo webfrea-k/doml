@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val prefs = PreferenceHelper.defaultPrefs(this as Context)
+        val prefs = PreferenceHelper.defaultPrefs(applicationContext)
 
         val uuid = java.util.UUID.randomUUID().toString()
         if (prefs.getString(Const.GLOBAL_USER_ID, "empty") == "empty") {

@@ -42,7 +42,7 @@ class FragmentSocial : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_social, container, false)
-        val prefs = PreferenceHelper.defaultPrefs(activity)
+        val prefs = PreferenceHelper.defaultPrefs(context!!)
         val daysAlive = Static.getDaysAlive(context!!)
         val queue = Volley.newRequestQueue(context)
         val url = "https://days-of-my-life-57a3c.firebaseapp.com/daysofmylifequotes.json"
