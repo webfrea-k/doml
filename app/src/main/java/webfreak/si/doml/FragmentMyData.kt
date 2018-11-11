@@ -7,15 +7,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.util.Log
-import android.util.Log.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_my_data.*
@@ -27,10 +24,6 @@ import org.joda.time.*
 import org.joda.time.format.DateTimeFormat
 import webfreak.si.doml.objects.*
 import java.lang.ArithmeticException
-import android.view.KeyEvent.KEYCODE_BACK
-import android.support.v4.view.KeyEventDispatcher.dispatchKeyEvent
-import android.view.KeyEvent
-
 
 class FragmentMyData : Fragment() {
     private lateinit var mDatabase: DatabaseReference
@@ -127,6 +120,7 @@ class FragmentMyData : Fragment() {
         }
     }
     fun handlePersonSelection(text: String) {
+        birthday.clearFocus()
         if (text == Const.ADD_NEW) {
             val pop = FragmentAddPerson()
             val fm = activity?.supportFragmentManager
@@ -142,16 +136,13 @@ class FragmentMyData : Fragment() {
                     birthday.setText(convertLongToTime(it))
                     val birthDate = DateTime(it).withTimeAtStartOfDay()
                     updateBirthdayComponents(birthDate.millis)
-                    if(prefs?.getLong(Const.BIRTHDAY,0) != birthDate.millis) {
+                    if(prefs?.getLong(Const.BIRTHDAY,0) != birthDate.millis && text == Const.YOU) {
                         prefs?.edit()?.putLong(Const.BIRTHDAY, birthDate.millis)?.apply()
                     }
                     EventBus.getDefault().postSticky(UpdateEvent(0, Static.getDaysAlive(context!!).toLong()))
                     val random = kotlin.random.Random.nextInt(0,10)
                     //display ad probability 3/7
-                    if (!BuildConfig.DEBUG) {
-                        EventBus.getDefault().postSticky(ShowInterstitial(random > 7))
-                    }
-
+                    EventBus.getDefault().postSticky(ShowInterstitial(random > 7 && !BuildConfig.DEBUG))
                     restartHandlerRuns(birthDate)
                 }
             }
@@ -217,6 +208,7 @@ class FragmentMyData : Fragment() {
         data?.extras?.get("name").let {
             if (requestCode == 777) {
                 handlePersonSelection(it.toString())
+                person_spinner.setSelection(trackedUsers.indexOf(it.toString()), true)
             }
             if (requestCode == 888) {
                 user?.birthdays?.remove(it)
@@ -236,8 +228,8 @@ class FragmentMyData : Fragment() {
                 setBirthdayText = prepareDialogPickerMessage(it.toString())
                 personAdapter.notifyDataSetChanged()
                 person_spinner.setSelection(trackedUsers.size - 2)
+                datePicker.performClick()
             }
-
         }
     }
 

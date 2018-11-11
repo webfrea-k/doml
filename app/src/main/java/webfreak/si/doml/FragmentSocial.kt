@@ -45,16 +45,12 @@ class FragmentSocial : Fragment() {
         val prefs = PreferenceHelper.defaultPrefs(context!!)
         val daysAlive = Static.getDaysAlive(context!!)
         val queue = Volley.newRequestQueue(context)
-        val url = "https://days-of-my-life-57a3c.firebaseapp.com/daysofmylifequotes.json"
+        val url = "https://us-central1-days-of-my-life-57a3c.cloudfunctions.net/getQuote?daysAlive=$daysAlive"
 
         val stringReq = StringRequest(
             Request.Method.GET, url,
             Response.Listener<String> { response ->
-                val strResp = response.toString()
-                val jsonObj = JSONObject(strResp)
-                val jsonArray: JSONArray = jsonObj.getJSONArray("quote")
-                val randQuote = jsonArray.getJSONObject(Random.nextInt(0, jsonArray.length()-1))
-                val randQuoteString = randQuote.get("name").toString()
+                val randQuoteString = response.toString()
                 prefs.edit().putString(Const.DAILY_QUOTE, daysAlive.toString() + "|" + randQuoteString).apply()
                 loadImage(rootView, daysAlive, randQuoteString)
 

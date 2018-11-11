@@ -8,8 +8,8 @@ android {
         applicationId "webfreak.si.doml"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 26
-        versionName "2.0.16"
+        versionCode 28
+        versionName "2.0.18"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

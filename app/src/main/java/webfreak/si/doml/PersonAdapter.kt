@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 
 class PersonAdapter(c: Context, persons: MutableList<String>, tFragment: Fragment) : BaseAdapter() {
+
     private var people = persons
     private val context = c
     private val targetFragment = tFragment
@@ -26,6 +27,14 @@ class PersonAdapter(c: Context, persons: MutableList<String>, tFragment: Fragmen
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        return getCustomView(position, convertView, parent)
+    }
+
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        return getCustomView(position, convertView, parent)
+    }
+
+    private fun getCustomView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var view = convertView
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.people_list_item, parent, false)
@@ -42,10 +51,10 @@ class PersonAdapter(c: Context, persons: MutableList<String>, tFragment: Fragmen
             val i = Intent().putExtra("name", people[position])
             targetFragment.onActivityResult(888, Activity.RESULT_OK, i)
         }
-        view?.setOnClickListener {
-            val i = Intent().putExtra("name", people[position])
-            targetFragment.onActivityResult(777, Activity.RESULT_OK, i)
-        }
+        //textView?.setOnClickListener {
+        //    val i = Intent().putExtra("name", people[position])
+        //    targetFragment.onActivityResult(777, Activity.RESULT_OK, i)
+        //}
         return view!!
     }
 }
