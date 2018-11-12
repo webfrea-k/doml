@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import com.bumptech.glide.Glide
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.fragment_add_person.*
 import kotlinx.android.synthetic.main.fragment_my_data.*
 import kotlinx.android.synthetic.main.fragment_my_data.view.*
 import org.greenrobot.eventbus.EventBus
@@ -40,11 +42,13 @@ class FragmentMyData : Fragment() {
     private lateinit var birthday: EditText
     private lateinit var datePicker: ImageButton
     private val fragment = this
+    private lateinit var dpd: DatePickerDialog
+    private lateinit var rootView: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         addDefaultUsers()
         prefs = PreferenceHelper.defaultPrefs(context!!)
-        val rootView = inflater.inflate(R.layout.fragment_my_data, container, false)
+        rootView = inflater.inflate(R.layout.fragment_my_data, container, false)
         birthday = rootView.edit_birthday
         datePicker = rootView.btn_select_birthday
         setBirthdayText = getString(R.string.set_your_birthday)
@@ -69,9 +73,15 @@ class FragmentMyData : Fragment() {
                         }
                         trackedUsers.add(Const.ADD_NEW)
                         personAdapter.notifyDataSetChanged()
-                        user?.birthdays?.get(person_spinner.selectedItem)?.let {time ->
+                        val time = user?.birthdays?.get(person_spinner.selectedItem) ?: 0L
+                        if(time > 0) {
                             birthday.setText(convertLongToTime(time))
-                            updateBirthdayComponents(time)
+                            val date = DateTime(time).withTimeAtStartOfDay()
+                            updateBirthdayComponents(date.millis)
+                            restartHandlerRuns(date)
+                            EventBus.getDefault().post(UpdateEvent(0, getDaysToNow(date)))
+                        } else if (person_spinner.selectedItem == Const.YOU) {
+                            showDateDialog()
                         }
                     }
                 }
@@ -88,26 +98,8 @@ class FragmentMyData : Fragment() {
         }
 
         datePicker.setOnClickListener {
-            val dpd = DatePickerDialog(activity, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                val birthdayDate =  "" + dayOfMonth + "." + (monthOfYear +1) + "."+ year
-                val formatter = DateTimeFormat.forPattern("dd.MM.yyyy")
-                val birthdayDateDate = formatter.parseDateTime(birthdayDate)
-                if (user == null) {
-                    user = UserBirthday()
-                }
-                user?.birthdays?.set(rootView.person_spinner.selectedItem.toString(), convertDateToLong(year, monthOfYear + 1, dayOfMonth))
-                user?.token = prefs?.getString(Const.TOKEN, "")!!
-
-                birthday.setText(birthdayDate)
-                updateBirthdayComponents(birthdayDateDate.millis)
-                mDatabase.child("users").child(prefs?.getString(Const.GLOBAL_USER_ID,"todo")!!).setValue(user)
-                EventBus.getDefault().post(UpdateEvent(0, getDaysToNow(birthdayDateDate)))
-                restartHandlerRuns(birthdayDateDate)
-            }, birthdaysComponents[2], birthdaysComponents[1], birthdaysComponents[0])
-            dpd.setMessage(setBirthdayText)
-            dpd.show()
+            showDateDialog()
         }
-
         return rootView
     }
 
@@ -131,7 +123,7 @@ class FragmentMyData : Fragment() {
             user?.birthdays?.get(text)?.let {
                 if(it == 0L) {
                     birthday.text.clear()
-                    datePicker.performClick()
+                    showDateDialog()
                 } else {
                     birthday.setText(convertLongToTime(it))
                     val birthDate = DateTime(it).withTimeAtStartOfDay()
@@ -139,7 +131,7 @@ class FragmentMyData : Fragment() {
                     if(prefs?.getLong(Const.BIRTHDAY,0) != birthDate.millis && text == Const.YOU) {
                         prefs?.edit()?.putLong(Const.BIRTHDAY, birthDate.millis)?.apply()
                     }
-                    EventBus.getDefault().postSticky(UpdateEvent(0, Static.getDaysAlive(context!!).toLong()))
+                    EventBus.getDefault().postSticky(UpdateEvent(0, getDaysToNow(birthDate)))
                     val random = kotlin.random.Random.nextInt(0,10)
                     //display ad probability 3/7
                     EventBus.getDefault().postSticky(ShowInterstitial(random > 7 && !BuildConfig.DEBUG))
@@ -228,8 +220,35 @@ class FragmentMyData : Fragment() {
                 setBirthdayText = prepareDialogPickerMessage(it.toString())
                 personAdapter.notifyDataSetChanged()
                 person_spinner.setSelection(trackedUsers.size - 2)
-                datePicker.performClick()
+                showDateDialog()
             }
+        }
+    }
+
+    private fun showDateDialog(){
+        dpd = DatePickerDialog(activity, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            val birthdayDate =  "" + dayOfMonth + "." + (monthOfYear +1) + "."+ year
+            val formatter = DateTimeFormat.forPattern("dd.MM.yyyy")
+            val birthdayDateDate = formatter.parseDateTime(birthdayDate)
+            if (user == null) {
+                user = UserBirthday()
+            }
+            val userName = rootView.person_spinner.selectedItem.toString()
+            user?.birthdays?.set(userName, convertDateToLong(year, monthOfYear + 1, dayOfMonth))
+            user?.token = prefs?.getString(Const.TOKEN, "")!!
+
+            birthday.setText(birthdayDate)
+            updateBirthdayComponents(birthdayDateDate.millis)
+            mDatabase.child("users").child(prefs?.getString(Const.GLOBAL_USER_ID,"todo")!!).setValue(user)
+            EventBus.getDefault().post(UpdateEvent(0, getDaysToNow(birthdayDateDate)))
+            restartHandlerRuns(birthdayDateDate)
+            if (userName == Const.YOU) {
+                prefs?.edit()?.putLong(Const.BIRTHDAY, birthdayDateDate.millis)?.apply()
+            }
+        }, birthdaysComponents[2], birthdaysComponents[1], birthdaysComponents[0])
+        if(!dpd.isShowing){
+            dpd.setMessage(setBirthdayText)
+            dpd.show()
         }
     }
 

@@ -10,7 +10,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import android.app.PendingIntent
 import android.content.Intent
-import kotlin.text.Typography.quote
 
 /**
  * Implementation of App Widget functionality.

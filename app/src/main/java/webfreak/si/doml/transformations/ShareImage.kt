@@ -27,8 +27,8 @@ class ShareImage(ctx: Context, quote: String) : BitmapTransformation() {
 
     private fun drawMultilineTextToBitmap(gContext: Context, gResId: Bitmap, text: String): Bitmap {
         var gText = text
-        if (gText.contains("You have just")) {
-            gText = gText.replace("You have just", "I have just")
+        if (gText.contains("You have outlived")) {
+            gText = gText.replace("You have outlived", "I have outlived")
         }
         // prepare canvas
         val resources = gContext.resources

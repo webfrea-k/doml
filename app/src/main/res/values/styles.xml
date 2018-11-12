@@ -53,4 +53,11 @@
         <item name="android:fontFamily">@font/psr</item>
         <item name="android:textSize">@dimen/subtitle_label_font_size</item>
     </style>
+
+    <style name="TranslucentTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>
