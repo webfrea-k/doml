@@ -51,10 +51,6 @@ class PersonAdapter(c: Context, persons: MutableList<String>, tFragment: Fragmen
             val i = Intent().putExtra("name", people[position])
             targetFragment.onActivityResult(888, Activity.RESULT_OK, i)
         }
-        //textView?.setOnClickListener {
-        //    val i = Intent().putExtra("name", people[position])
-        //    targetFragment.onActivityResult(777, Activity.RESULT_OK, i)
-        //}
         return view!!
     }
 }

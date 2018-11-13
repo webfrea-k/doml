@@ -79,9 +79,9 @@ class MainActivity : AppCompatActivity() {
             EventBus.getDefault().post(ToggleSearchEvent(searchVisible))
             searchVisible = !searchVisible
         }
-        MobileAds.initialize(this, "ca-app-pub-9883575696396484~4631354970")
+        MobileAds.initialize(this, getString(R.string.admob_app_unit_id))
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-9883575696396484/4456643893"
+        mInterstitialAd.adUnitId = getString(R.string.admob_interstitial_ad_unit_id)
         mInterstitialAd.loadAd(AdRequest.Builder().build())
 
 
