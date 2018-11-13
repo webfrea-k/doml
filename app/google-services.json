@@ -10,6 +10,37 @@
       "client_info": {
         "mobilesdk_app_id": "1:311047478483:android:a479a15014d2c357",
         "android_client_info": {
+          "package_name": "webfreak.si.daysofmylife2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311047478483-ggj34hpvugouunbv03om7npscal87gcv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARiIXLduXsfAQT1zC8d01waj4evFqvENk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311047478483:android:31f1abf08553fafd",
+        "android_client_info": {
           "package_name": "webfreak.si.doml"
         }
       },
