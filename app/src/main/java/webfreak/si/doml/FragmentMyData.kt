@@ -62,6 +62,9 @@ class FragmentMyData : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 dataSnapshot.getValue(UserBirthday::class.java).let { onlineUser ->
                     user = onlineUser
+                    onlineUser?.active?.let {
+                        EventBus.getDefault().post(ToggleNotifications(it))
+                    }
                     onlineUser?.birthdays?.keys?.let { list ->
                         val birthdays = list.toMutableList()
                         trackedUsers.clear()

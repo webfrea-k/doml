@@ -40,5 +40,6 @@
     <string name="outlived_today">Outlived today!</string>
     <string name="content_description">Content description</string>
     <string name="set_your_birthday">Set your birthday</string>
+    <string name="notification_change">Notifications successfully %s</string>
 
 </resources>

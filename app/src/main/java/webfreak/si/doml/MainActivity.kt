@@ -1,10 +1,8 @@
 package webfreak.si.doml
 
-import android.content.Context
 import android.support.design.widget.TabLayout
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -13,7 +11,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
@@ -21,13 +18,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import webfreak.si.doml.objects.ShowInterstitial
-import webfreak.si.doml.objects.ShowNormalAd
-import webfreak.si.doml.objects.ToggleSearchEvent
-import webfreak.si.doml.objects.UserBirthday
+import webfreak.si.doml.objects.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mDatabase: DatabaseReference
     private lateinit var mInterstitialAd: InterstitialAd
     private var searchVisible: Boolean = false
+    private var optionsMenu: Menu? = null
     /**
      * The [android.support.v4.view.PagerAdapter] that will provide
      * fragments for each of the sections. We use a
@@ -44,7 +40,7 @@ class MainActivity : AppCompatActivity() {
      * [android.support.v4.app.FragmentStatePagerAdapter].
      */
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
-
+    private var notificationsOn: Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -67,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                     val user = UserBirthday(map)
                     prefs.getString(Const.GLOBAL_USER_ID, "todo")?.let {
                         mDatabase.child("users").child(it).setValue(user)
+                        notificationsOn = user.active
                         prefs.edit().putBoolean(Const.ADDED_TO_DB, true).apply()
                     }
                 }
@@ -113,6 +110,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onEvent(event: ToggleNotifications) {
+        notificationsOn = event.active
+        optionsMenu?.getItem(0)?.setIcon(if (event.active) R.drawable.notifications_on else  R.drawable.notifications_off)
+    }
+
     override fun onStart() {
         super.onStart()
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -128,6 +131,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
+        optionsMenu = menu
+        val prefs = PreferenceHelper.defaultPrefs(applicationContext)
+        val notificationsOn = prefs.getBoolean(Const.NOTIFICATION_ENABLED, true)
+        menu.getItem(0).setIcon(if (notificationsOn) R.drawable.notifications_on else R.drawable.notifications_off)
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -137,6 +144,14 @@ class MainActivity : AppCompatActivity() {
         val id = item.itemId
 
         if (id == R.id.action_settings) {
+            item.setIcon(if (notificationsOn) R.drawable.notifications_off else R.drawable.notifications_on)
+            notificationsOn = ! notificationsOn
+            val prefs = PreferenceHelper.defaultPrefs(applicationContext)
+            prefs.getString(Const.GLOBAL_USER_ID, "todo")?.let {
+                mDatabase.child("users").child(prefs.getString(Const.GLOBAL_USER_ID,"todo")!!).child("active").setValue(notificationsOn)
+            }
+            Snackbar.make(window.decorView.main_content, java.lang.String.format(getString(R.string.notification_change), if(notificationsOn) "enabled" else "disabled"), Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
             return true
         }
 
